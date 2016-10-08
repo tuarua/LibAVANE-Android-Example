@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.lylc.widget.circularprogressbar.CircularProgressBar;
 import com.tuarua.avane.android.LibAVANE;
 import com.tuarua.avane.android.Progress;
+import com.tuarua.avane.android.constants.LogLevel;
 import com.tuarua.avane.android.events.Event;
 import com.tuarua.avane.android.events.IEventHandler;
 import com.tuarua.avane.android.gets.AvailableFormat;
@@ -27,7 +28,12 @@ import com.tuarua.avane.android.gets.Layouts;
 import com.tuarua.avane.android.gets.PixelFormat;
 import com.tuarua.avane.android.gets.Protocols;
 import com.tuarua.avane.android.gets.SampleFormat;
+import com.tuarua.avane.android.libavaneexample.utils.TextUtils;
+import com.tuarua.avane.android.libavaneexample.utils.TimeUtils;
+import com.tuarua.avane.android.probe.Probe;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,20 +43,37 @@ public class MainActivity extends AppCompatActivity {
     private String appDirectory;
 
     private CircularProgressBar progressCircle;
+    private Double duration;
+    private Button btn;
+    private TextView tv3;
+    private DecimalFormat percentFormat1D;
+    private DecimalFormat percentFormat2D;
+
+    private boolean isWorking = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        percentFormat1D = new DecimalFormat("0.0");
+        percentFormat1D.setRoundingMode(RoundingMode.UP);
+
+        percentFormat2D = new DecimalFormat("0.00");
+        percentFormat2D.setRoundingMode(RoundingMode.UP);
+
         libAVANE = LibAVANE.getInstance();
-        libAVANE.setLogLevel(16);
+        libAVANE.setLogLevel(LogLevel.INFO);
 
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText(libAVANE.getVersion());
 
         TextView tv2 = (TextView) findViewById(R.id.textView2);
         tv2.setText("http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4");
+
+        tv3 = (TextView) findViewById(R.id.textView3);
 
         Log.i("build config",libAVANE.getBuildConfiguration());
 
@@ -64,23 +87,23 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         progressCircle = (CircularProgressBar) findViewById(R.id.circularprogressbar);
         progressCircle.setTitle("0%");
         progressCircle.setSubTitle("");
-        progressCircle.setMax(100);
+        progressCircle.setMax(360);
         progressCircle.setProgress(0);
 
-
-        Button btn = (Button) findViewById(R.id.button);
+        btn = (Button) findViewById(R.id.button);
         btn.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        progressCircle.setVisibility(View.VISIBLE);
-                        //doEncode();
-                        triggerProbe();
-                        //on proberesult trigger encode
+                        if(isWorking){
+                            libAVANE.cancelEncode();
+                        }else{
+                            isWorking = true;
+                            triggerProbe();
+                        }
                     }
                 });
 
@@ -103,6 +126,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void callback(Event event) {
                 String msg = (String) event.getParams();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.this.progressCircle.setVisibility(View.VISIBLE);
+                        MainActivity.this.btn.setText("Cancel");
+                    }
+                });
+
                 Log.i("MA","encode start");
             }
         });
@@ -110,26 +141,43 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void callback(Event event) {
                 String msg = (String) event.getParams();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.this.progressCircle.setProgress(360);
+                        MainActivity.this.progressCircle.setTitle("100%");
+                        MainActivity.this.btn.setText("Encode");
+                    }
+                });
+                isWorking = false;
                 Log.i("MA","encode finish");
             }
         });
+
         libAVANE.eventDispatcher.addEventListener(Event.ON_ENCODE_PROGRESS, new IEventHandler() {
             @Override
             public void callback(Event event) {
-                Progress progress = (Progress) event.getParams();
-                Log.i("MA fps", String.valueOf(progress.fps));
-                Log.i("MA bitrate", String.valueOf(progress.bitrate));
-                Log.i("MA size", String.valueOf(progress.size));
-                Log.i("MA frame", String.valueOf(progress.frame));
-                Log.i("MA speed", String.valueOf(progress.speed));
-
-                //update on ui thread
-                //progressCircle.setTitle("42%");
-                //progressCircle.setSubTitle("");
-                //progressCircle.setProgress(42);
-
+                final Progress progress = (Progress) event.getParams();
+                final Double percent = (progress.secs + (progress.us/100))/duration;
+                final int degrees = (int) Math.round(percent * 360);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.this.progressCircle.setProgress(degrees);
+                        MainActivity.this.tv3.setText("");
+                        MainActivity.this.tv3.append(String.format("\ntime: %s",
+                                TimeUtils.secsToTimeCode(Double.valueOf((progress.secs + progress.us/100)))  + "/" + TimeUtils.secsToTimeCode(MainActivity.this.duration)   ));
+                        MainActivity.this.tv3.append(String.format("\nspeed: %s", String.valueOf(percentFormat2D.format(progress.speed)) + "x"));
+                        MainActivity.this.tv3.append(String.format("\nfps: %s", String.valueOf(percentFormat2D.format(progress.fps))));
+                        MainActivity.this.tv3.append(String.format("\nbitrate: %s", String.valueOf(percentFormat2D.format(progress.bitrate)) +" Kbps" ));
+                        MainActivity.this.tv3.append(String.format("\nframe: %s", String.valueOf(progress.frame)));
+                        MainActivity.this.tv3.append(String.format("\nsize: %s", TextUtils.bytesToString(progress.size*1024)));
+                        MainActivity.this.progressCircle.setTitle(percentFormat1D.format(percent * 100) + "%");
+                    }
+                });
             }
         });
+
         libAVANE.eventDispatcher.addEventListener(Event.ON_PROBE_INFO, new IEventHandler() {
             @Override
             public void callback(Event event) {
@@ -141,6 +189,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void callback(Event event) {
                 Log.i("MA","ON_PROBE_INFO_AVAILABLE");
+                Probe probe = libAVANE.getProbeInfo();
+
+                duration = probe.format.duration;
+                Log.i("MA","PROBE DONE");
+                Log.i("MA","CALLING encode");
+                doEncode();
+
             }
         });
 
@@ -165,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
         libAVANE.encode(params);
     }
-    private void getAvailableFormats(){
+    private void getInfo(){
         /*
         ArrayList<Color> clrs = libAVANE.getColors();
         Log.i("num colors",String.valueOf(clrs.size()));

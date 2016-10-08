@@ -237,7 +237,6 @@ public class CircularProgressBar extends ProgressBar{
 			public void onAnimationUpdate(final ValueAnimator animation) {
 				int progress = ((Float) animation.getAnimatedValue()).intValue();
 				if(progress!=CircularProgressBar.this.getProgress()){
-					Log.d(TAG, progress + "");
 					CircularProgressBar.this.setProgress(progress);
 					if(listener!=null)
 						listener.onAnimationProgress(progress);					

@@ -26,8 +26,6 @@
         android:id="@+id/textView2"
         android:text="" />
 
-
-
     <Button
         android:text="Encode"
         android:layout_width="wrap_content"
@@ -49,5 +47,13 @@
         android:visibility="invisible"
         circular:cpb_subtitle=""
         circular:cpb_title="" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/circularprogressbar"
+        android:id="@+id/textView3"
+        android:text="" />
 
 </RelativeLayout>
