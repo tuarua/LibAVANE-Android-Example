@@ -1,1 +1,1 @@
-include ':app', ':LibAVANE-Android'
+include ':app', ':LibAVANE-Android', ':circular-loader-library'

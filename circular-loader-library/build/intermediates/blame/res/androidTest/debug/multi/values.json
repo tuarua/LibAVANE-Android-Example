@@ -1,0 +1,144 @@
+[
+    {
+        "outputFile": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values/values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 70,
+                    "endOffset": 121
+                },
+                "from": {
+                    "file": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 70,
+                        "endOffset": 121
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 126,
+                    "endColumn": 68,
+                    "endOffset": 190
+                },
+                "from": {
+                    "file": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 126,
+                        "endColumn": 68,
+                        "endOffset": 190
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 195,
+                    "endColumn": 68,
+                    "endOffset": 259
+                },
+                "from": {
+                    "file": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 195,
+                        "endColumn": 68,
+                        "endOffset": 259
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 264,
+                    "endColumn": 65,
+                    "endOffset": 325
+                },
+                "from": {
+                    "file": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 264,
+                        "endColumn": 65,
+                        "endOffset": 325
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 7,
+                    "startColumn": 4,
+                    "startOffset": 767,
+                    "endColumn": 26,
+                    "endOffset": 789
+                },
+                "from": {
+                    "file": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 7,
+                        "startColumn": 4,
+                        "startOffset": 767,
+                        "endColumn": 26,
+                        "endOffset": 789
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 8,
+                    "startColumn": 4,
+                    "startOffset": 794,
+                    "endLine": 16,
+                    "endColumn": 12,
+                    "endOffset": 1346
+                },
+                "from": {
+                    "file": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 794,
+                        "endLine": 16,
+                        "endColumn": 12,
+                        "endOffset": 1346
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 1351,
+                    "endLine": 20,
+                    "endColumn": 12,
+                    "endOffset": 1564
+                },
+                "from": {
+                    "file": "/Users/User/android/LibAVANE-Android-Example/circular-loader-library/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 17,
+                        "startColumn": 4,
+                        "startOffset": 1351,
+                        "endLine": 20,
+                        "endColumn": 12,
+                        "endOffset": 1564
+                    }
+                }
+            }
+        ]
+    }
+]

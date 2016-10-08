@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.lylc.widget.circularprogressbar.CircularProgressBar;
 import com.tuarua.avane.android.LibAVANE;
 import com.tuarua.avane.android.Progress;
 import com.tuarua.avane.android.events.Event;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private LibAVANE libAVANE;
     private String appDirectory;
 
+    private CircularProgressBar progressCircle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText(libAVANE.getVersion());
+
+        TextView tv2 = (TextView) findViewById(R.id.textView2);
+        tv2.setText("http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4");
 
         Log.i("build config",libAVANE.getBuildConfiguration());
 
@@ -59,13 +65,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        progressCircle = (CircularProgressBar) findViewById(R.id.circularprogressbar);
+        progressCircle.setTitle("0%");
+        progressCircle.setSubTitle("");
+        progressCircle.setMax(100);
+        progressCircle.setProgress(0);
+
+
         Button btn = (Button) findViewById(R.id.button);
         btn.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.i("button clicked","click");
-                        doEncode();
+                        progressCircle.setVisibility(View.VISIBLE);
+                        //doEncode();
+                        triggerProbe();
+                        //on proberesult trigger encode
                     }
                 });
 
@@ -107,10 +122,40 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MA size", String.valueOf(progress.size));
                 Log.i("MA frame", String.valueOf(progress.frame));
                 Log.i("MA speed", String.valueOf(progress.speed));
+
+                //update on ui thread
+                //progressCircle.setTitle("42%");
+                //progressCircle.setSubTitle("");
+                //progressCircle.setProgress(42);
+
+            }
+        });
+        libAVANE.eventDispatcher.addEventListener(Event.ON_PROBE_INFO, new IEventHandler() {
+            @Override
+            public void callback(Event event) {
+                Log.i("MA","ON_PROBE_INFO");
+            }
+        });
+
+        libAVANE.eventDispatcher.addEventListener(Event.ON_PROBE_INFO_AVAILABLE, new IEventHandler() {
+            @Override
+            public void callback(Event event) {
+                Log.i("MA","ON_PROBE_INFO_AVAILABLE");
+            }
+        });
+
+        libAVANE.eventDispatcher.addEventListener(Event.NO_PROBE_INFO, new IEventHandler() {
+            @Override
+            public void callback(Event event) {
+                Log.i("MA","NO PROBE INFO");
             }
         });
 
 
+    }
+
+    private void triggerProbe(){
+        libAVANE.triggerProbeInfo("http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4");
     }
 
     private void doEncode(){
