@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                             libAVANE.cancelEncode();
                         }else{
                             isWorking = true;
+                            btn.setEnabled(false);
                             triggerProbe();
                         }
                     }
@@ -131,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         MainActivity.this.progressCircle.setVisibility(View.VISIBLE);
                         MainActivity.this.btn.setText("Cancel");
+                        MainActivity.this.btn.setEnabled(true);
                     }
                 });
 
@@ -147,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this.progressCircle.setProgress(360);
                         MainActivity.this.progressCircle.setTitle("100%");
                         MainActivity.this.btn.setText("Encode");
+                        MainActivity.this.btn.setEnabled(true);
                     }
                 });
                 isWorking = false;
@@ -166,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this.progressCircle.setProgress(degrees);
                         MainActivity.this.tv3.setText("");
                         MainActivity.this.tv3.append(String.format("\ntime: %s",
-                                TimeUtils.secsToTimeCode(Double.valueOf((progress.secs + progress.us/100)))  + "/" + TimeUtils.secsToTimeCode(MainActivity.this.duration)   ));
+                                TimeUtils.secsToTimeCode(Double.valueOf((progress.secs + progress.us/100)))  + " / " + TimeUtils.secsToTimeCode(MainActivity.this.duration)   ));
                         MainActivity.this.tv3.append(String.format("\nspeed: %s", String.valueOf(percentFormat2D.format(progress.speed)) + "x"));
                         MainActivity.this.tv3.append(String.format("\nfps: %s", String.valueOf(percentFormat2D.format(progress.fps))));
                         MainActivity.this.tv3.append(String.format("\nbitrate: %s", String.valueOf(percentFormat2D.format(progress.bitrate)) +" Kbps" ));
