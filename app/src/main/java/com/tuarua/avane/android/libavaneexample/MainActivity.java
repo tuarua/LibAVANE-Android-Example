@@ -267,20 +267,21 @@ public class MainActivity extends AppCompatActivity {
         Log.i("num devices",String.valueOf(devices.size()));
         */
 
+        /*
         ArrayList<AvailableFormat> formats = libAVANE.getAvailableFormats();
         for (AvailableFormat format : formats) {
             Log.i("format: ",format.nameLong);
         }
         Log.i("num formats",String.valueOf(formats.size()));
+        */
 
 
 
-        /*
         ArrayList<SampleFormat> formats = libAVANE.getSampleFormats();
         for (SampleFormat format : formats) {
             Log.i("format: ",format.name);
         }
-        */
+
         Log.i("num sample formats",String.valueOf(formats.size()));
     }
 
