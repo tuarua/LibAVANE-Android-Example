@@ -35,6 +35,7 @@ import com.tuarua.avane.android.probe.Probe;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -216,10 +217,34 @@ public class MainActivity extends AppCompatActivity {
         libAVANE.triggerProbeInfo("http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4");
     }
 
+    private String[] cliParse(String str, Boolean lookForQuotes) {
+        String[] args;
+        List<String> argsList = new ArrayList<String>();
+        Boolean readingPart = false;
+        String part = "";
+        for (int i = 0; i < str.length(); i++) {
+            String s = String.valueOf(str.charAt(i));
+            if (s.equals(" ") && !readingPart){
+                argsList.add(part);
+                part = "";
+            }else{
+                if(s.equals("\\") && lookForQuotes)
+                    readingPart = !readingPart;
+                else
+                    part +=s ;
+            }
+        }
+        argsList.add(part);
+        args = argsList.toArray(new String[argsList.size()]);
+        return args;
+    }
+
     private void doEncode(){
-        String[] params = {"-i",
-                "http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4",
-                "-c:v","libx264","-c:a","copy","-preset","ultrafast","-y", appDirectory + "/files/avane-encode-classic.mp4"};
+
+        String[] params = cliParse("-i " +
+                "http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4 " +
+                "-c:v libx264 -c:a copy -preset ultrafast -y "
+                + appDirectory + "/files/avane-encode-classic.mp4",true);
 
         libAVANE.encode(params);
     }
