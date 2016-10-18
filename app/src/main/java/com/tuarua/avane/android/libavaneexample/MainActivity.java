@@ -220,10 +220,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void doEncode(){
 
-        String[] params = libAVANE.cliParse("-i " +
+        String params = "-i " +
                 "http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4 " +
                 "-c:v libx264 -crf 22 -c:a copy -preset ultrafast -y "
-                + appDirectory + "/files/avane-encode-classic.mp4",true);
+                + appDirectory + "/files/avane-encode-classic.mp4";
 
         libAVANE.encode(params);
     }
