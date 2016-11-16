@@ -10,32 +10,27 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.lylc.widget.circularprogressbar.CircularProgressBar;
+import com.tuarua.avane.android.ffmpeg.InputOptions;
+import com.tuarua.avane.android.ffmpeg.InputStream;
 import com.tuarua.avane.android.LibAVANE;
+import com.tuarua.avane.android.ffmpeg.OutputAudioStream;
+import com.tuarua.avane.android.ffmpeg.OutputOptions;
+import com.tuarua.avane.android.ffmpeg.OutputVideoStream;
 import com.tuarua.avane.android.Progress;
-import com.tuarua.avane.android.constants.LogLevel;
+import com.tuarua.avane.android.ffmpeg.X264Options;
+import com.tuarua.avane.android.ffmpeg.constants.LogLevel;
 import com.tuarua.avane.android.events.Event;
 import com.tuarua.avane.android.events.IEventHandler;
-import com.tuarua.avane.android.gets.AvailableFormat;
-import com.tuarua.avane.android.gets.BitStreamFilter;
-import com.tuarua.avane.android.gets.Codec;
-import com.tuarua.avane.android.gets.Color;
-import com.tuarua.avane.android.gets.Decoder;
-import com.tuarua.avane.android.gets.Device;
-import com.tuarua.avane.android.gets.Encoder;
-import com.tuarua.avane.android.gets.Filter;
-import com.tuarua.avane.android.gets.HardwareAcceleration;
-import com.tuarua.avane.android.gets.Layouts;
-import com.tuarua.avane.android.gets.PixelFormat;
-import com.tuarua.avane.android.gets.Protocols;
-import com.tuarua.avane.android.gets.SampleFormat;
+import com.tuarua.avane.android.ffmpeg.constants.X264Preset;
+import com.tuarua.avane.android.ffmpeg.constants.X264Profile;
+import com.tuarua.avane.android.ffmpeg.gets.SampleFormat;
 import com.tuarua.avane.android.libavaneexample.utils.TextUtils;
 import com.tuarua.avane.android.libavaneexample.utils.TimeUtils;
-import com.tuarua.avane.android.probe.Probe;
+import com.tuarua.avane.android.ffprobe.Probe;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -217,15 +212,44 @@ public class MainActivity extends AppCompatActivity {
         libAVANE.triggerProbeInfo("http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4");
     }
 
-
-    private void doEncode(){
-
+    private void doEncodeClassic() {
         String params = "-i " +
                 "http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4 " +
                 "-c:v libx264 -crf 22 -c:a copy -preset ultrafast -y "
                 + appDirectory + "/files/avane-encode-classic.mp4";
 
         libAVANE.encode(params);
+    }
+
+    private void doEncode() {
+
+        InputOptions inputOptions = new InputOptions();
+        inputOptions.uri = "http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4";
+        inputOptions.duration = 10.0;
+        InputStream.clear();
+        InputStream.addInput(inputOptions);
+
+        //video
+        OutputVideoStream videoStream = new OutputVideoStream();
+        videoStream.codec = "libx264";
+        videoStream.crf = 22;
+
+        X264Options x264Options = new X264Options();
+        x264Options.preset = X264Preset.ULTRA_FAST;
+        x264Options.profile = X264Profile.MAIN;
+        x264Options.level = "4.1";
+        videoStream.encoderOptions = x264Options;
+
+        OutputOptions.addVideoStream(videoStream);
+
+        //audio
+        OutputAudioStream audioStream = new OutputAudioStream();
+        audioStream.codec = "aac";
+        OutputOptions.addAudioStream(audioStream);
+
+        OutputOptions.uri = appDirectory + "/files/avane-encode-classic.mp4";
+
+        libAVANE.encode();
     }
     private void getInfo(){
         /*
