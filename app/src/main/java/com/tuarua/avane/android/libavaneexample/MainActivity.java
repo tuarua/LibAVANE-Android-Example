@@ -225,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
 
         InputOptions inputOptions = new InputOptions();
         inputOptions.uri = "http://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4";
-        inputOptions.duration = 10.0;
         InputStream.clear();
         InputStream.addInput(inputOptions);
 
